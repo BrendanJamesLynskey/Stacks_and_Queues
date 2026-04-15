@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stacks and Queues</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+  :root {
+    --amber:  #f5a623;
+    --green:  #4ecb8d;
+    --purple: #a78bfa;
+    --blue:   #60a5fa;
+    --red:    #f87171;
+    --bg:     #0a0a0f;
+    --bg2:    #10101a;
+    --bg3:    #181824;
+    --border: #2a2a3a;
+    --text:   #e8e8f0;
+    --muted:  #8888a8;
+  }
+
+  .reveal-viewport { background: var(--bg); }
+  .reveal .slides section { background: transparent; }
+
+  .reveal { font-family: 'DM Sans', sans-serif; color: var(--text); }
+  .reveal h1, .reveal h2, .reveal h3 { font-family: 'Playfair Display', serif; font-weight: 700; }
+  .reveal h1 { font-size: 1.6em; color: var(--amber); line-height: 1.1; }
+  .reveal h2 { font-size: 1.1em; color: var(--amber); margin-bottom: .2em; }
+  .reveal h3 { font-size: .78em; color: var(--green); margin-bottom: .15em; }
+  .reveal p  { font-size: .56em; line-height: 1.45; color: var(--text); }
+  .reveal li { font-size: .54em; line-height: 1.45; margin-bottom: .1em; }
+  .reveal code { font-family: 'JetBrains Mono', monospace; font-size: .72em; }
+  .reveal pre  { box-shadow: none; background: var(--bg3); border: 1px solid var(--border);
+                 border-radius: 6px; padding: .3em .5em; margin: .25em 0; }
+  .reveal pre code { font-size: .52em; line-height: 1.35; background: transparent; color: #cdd6f4; }
+
+  /* ── slide chrome ── */
+  .slide-hdr {
+    display: flex; align-items: center; gap: .4em;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: .2em; margin-bottom: .3em;
+  }
+  .slide-hdr .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .42em; font-weight: 500;
+    color: var(--bg); background: var(--amber);
+    padding: .1em .4em; border-radius: 3px;
+    letter-spacing: .04em;
+  }
+  .slide-hdr h2 { margin: 0; font-size: .95em; }
+
+  /* ── two-column ── */
+  .cols   { display: grid; gap: .5em; }
+  .cols-2 { grid-template-columns: 1fr 1fr; }
+  .cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .cols-6040 { grid-template-columns: 6fr 4fr; }
+  .cols-4060 { grid-template-columns: 4fr 6fr; }
+
+  /* ── cards ── */
+  .card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 6px; padding: .35em .6em;
+  }
+  .card.amber { border-left: 3px solid var(--amber); }
+  .card.green { border-left: 3px solid var(--green); }
+  .card.purple{ border-left: 3px solid var(--purple); }
+  .card.blue  { border-left: 3px solid var(--blue); }
+  .card.red   { border-left: 3px solid var(--red); }
+  .card h3 { font-size: .64em; margin: 0 0 .12em; }
+  .card p  { font-size: .52em; margin: 0; color: #b8b8d0; }
+  .card ul { margin: 0; padding-left: 1em; }
+  .card li { font-size: .52em; color: #b8b8d0; margin-bottom: .02em; }
+
+  /* ── table ── */
+  .reveal table { width: 100%; border-collapse: collapse; font-size: .5em; }
+  .reveal table th { background: var(--bg3); color: var(--amber); font-weight: 600;
+                     padding: .2em .4em; border: 1px solid var(--border); text-align: left; }
+  .reveal table td { padding: .18em .4em; border: 1px solid var(--border); color: #ccc; }
+  .reveal table tr:nth-child(even) td { background: #0e0e18; }
+
+  /* ── accent spans ── */
+  .a  { color: var(--amber); font-weight: 600; }
+  .g  { color: var(--green); font-weight: 600; }
+  .p  { color: var(--purple); font-weight: 600; }
+  .b  { color: var(--blue); font-weight: 600; }
+  .r  { color: var(--red); font-weight: 600; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* ── SVG graph diagrams ── */
+  svg.diagram { display: block; margin: 0 auto; overflow: visible; }
+
+  /* ── pill badges ── */
+  .pill {
+    display: inline-block; font-family: 'JetBrains Mono', monospace;
+    font-size: .44em; padding: .08em .4em; border-radius: 99px;
+    border: 1px solid; margin: 0 .08em;
+  }
+  .pill.amber { color: var(--amber); border-color: var(--amber); }
+  .pill.green { color: var(--green); border-color: var(--green); }
+  .pill.purple{ color: var(--purple); border-color: var(--purple); }
+  .pill.blue  { color: var(--blue); border-color: var(--blue); }
+
+  /* ── footer — hidden ── */
+  .reveal .slide-footer { display: none; }
+  /* title slide special */
+  .title-slide h1 { font-size: 1.8em; }
+  .title-slide .subtitle {
+    font-size: .7em; color: var(--green); font-family: 'DM Sans', sans-serif;
+    font-weight: 300; letter-spacing: .04em; margin: .3em 0 .6em;
+  }
+  .title-slide .meta { font-size: .48em; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+
+  /* ── super-step animator ── */
+  .ss-row {
+    display: flex; gap: .25em; align-items: center;
+    margin: .1em 0; font-size: .55em; font-family: 'JetBrains Mono', monospace;
+  }
+  .ss-node {
+    padding: .2em .55em; border-radius: 5px; font-size: .9em;
+    background: var(--bg3); border: 1px solid var(--border); color: var(--text);
+  }
+  .ss-node.active { background: #1a2a1a; border-color: var(--green); color: var(--green); }
+  .ss-node.done   { background: #1a1a2a; border-color: var(--purple); color: var(--purple); }
+  .ss-arrow { color: var(--amber); }
+  .ss-label { font-size: .8em; color: var(--muted); margin-left: .3em; }
+
+  /* reduce default margins */
+  .reveal ul, .reveal ol { margin: .15em 0 .15em 1em; }
+.reveal .slides > section { display: flex !important; flex-direction: column !important; overflow-y: auto !important; align-items: stretch !important; justify-content: flex-start !important; }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 01 — Title
+══════════════════════════════════════════════════════════════════ -->
+<section class="title-slide" data-background-color="#0a0a0f">
+  <div style="font-family:'JetBrains Mono',monospace; font-size:.5em; color:var(--muted); margin-bottom:.4em; letter-spacing:.1em;">COMPUTER SCIENCE FUNDAMENTALS SERIES</div>
+  <h1>Stacks and<br>Queues</h1>
+  <div class="subtitle">
+    LIFO &middot; FIFO &middot; Priority queues &middot; Monotonic structures &middot;<br>
+    Deque &middot; Expression evaluation
+  </div>
+  <div style="width:60px; height:3px; background:var(--amber); margin-bottom:1.4em;"></div>
+  <div class="meta">
+    Mid-level software engineer track &nbsp;&middot;&nbsp; 20 slides
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 02 — Abstract Data Types vs Concrete Implementations
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">02</span>
+    <h2>Abstract Data Types vs Concrete Implementations</h2>
+  </div>
+  <div class="cols cols-2">
+    <div>
+      <h3>Abstract Data Type (ADT)</h3>
+      <p>A mathematical model that defines a data type purely by its <strong>behaviour</strong> &mdash; the operations it supports and their semantics &mdash; without specifying how those operations are implemented.</p>
+      <ul>
+        <li>Specifies <strong>what</strong> operations exist and what they return</li>
+        <li>Says nothing about memory layout, pointers, or arrays</li>
+        <li>Language-independent &mdash; a contract, not code</li>
+      </ul>
+    </div>
+    <div>
+      <h3>ADT &rarr; Implementation</h3>
+      <table>
+        <thead><tr><th>ADT</th><th>Possible implementations</th></tr></thead>
+        <tbody>
+          <tr><td><span class="a">Stack</span></td><td>Dynamic array, singly linked list</td></tr>
+          <tr><td><span class="a">Queue</span></td><td>Circular array buffer, doubly linked list</td></tr>
+          <tr><td><span class="a">Priority Queue</span></td><td>Binary heap, Fibonacci heap, sorted array</td></tr>
+          <tr><td><span class="a">Deque</span></td><td>Circular array buffer, doubly linked list</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:.5em; font-size:.5em; color:var(--muted);">The ADT is the <em>interface</em>; the data structure is the <em>implementation</em>. A stack is not &ldquo;an array&rdquo; &mdash; it is an abstraction that can be <em>backed by</em> an array.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 03 — The Stack — LIFO
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">03</span>
+    <h2>The Stack &mdash; LIFO</h2>
+  </div>
+  <p>Last In, First Out. The most recently added element is the first one removed.</p>
+  <div class="cols cols-6040">
+    <div>
+      <h3>Core operations</h3>
+      <table>
+        <thead><tr><th>Operation</th><th>Description</th><th>Time</th></tr></thead>
+        <tbody>
+          <tr><td><code>push(x)</code></td><td>Place element on top</td><td><code>O(1)</code></td></tr>
+          <tr><td><code>pop()</code></td><td>Remove &amp; return top</td><td><code>O(1)</code></td></tr>
+          <tr><td><code>peek()</code></td><td>Return top without removing</td><td><code>O(1)</code></td></tr>
+          <tr><td><code>isEmpty()</code></td><td>True if no elements</td><td><code>O(1)</code></td></tr>
+          <tr><td><code>size()</code></td><td>Number of elements</td><td><code>O(1)</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h3>Mental model</h3>
+<pre><code>push(A)  push(B)  push(C)  pop()
+                   ┌───┐
+         ┌───┐    │ C │   ┌───┐
+┌───┐   │ B │    │ B │   │ B │ &larr; top
+│ A │   │ A │    │ A │   │ A │
+└───┘   └───┘    └───┘   └───┘
+                          returns C</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 04 — Array-Backed vs Linked Stack
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">04</span>
+    <h2>Array-Backed vs Linked Stack</h2>
+  </div>
+  <div class="cols cols-2">
+    <div class="card amber">
+      <h3>Array-backed stack</h3>
+      <p>Dynamic array with a <code>top</code> index. Push increments and writes; pop reads and decrements.</p>
+      <ul>
+        <li><span class="g">Pro:</span> cache-friendly contiguous memory</li>
+        <li><span class="g">Pro:</span> zero pointer overhead</li>
+        <li><span class="g">Pro:</span> amortised <code>O(1)</code> push with doubling</li>
+        <li><span class="r">Con:</span> occasional <code>O(n)</code> resize</li>
+        <li><span class="r">Con:</span> wastes space if stack shrinks</li>
+      </ul>
+<pre><code class="language-python">class ArrayStack:
+    def __init__(self):
+        self._data = []
+    def push(self, x):
+        self._data.append(x)
+    def pop(self):
+        return self._data.pop()
+    def peek(self):
+        return self._data[-1]</code></pre>
+    </div>
+    <div class="card green">
+      <h3>Linked stack</h3>
+      <p>Each node holds a value and a pointer to the node below. Push and pop operate on the head.</p>
+      <ul>
+        <li><span class="g">Pro:</span> <code>O(1)</code> worst-case push/pop</li>
+        <li><span class="g">Pro:</span> memory proportional to actual size</li>
+        <li><span class="r">Con:</span> pointer overhead per node</li>
+        <li><span class="r">Con:</span> poor cache locality</li>
+        <li><span class="r">Con:</span> heap allocation per push</li>
+      </ul>
+      <p style="margin-top:.5em; font-size:.5em; color:var(--muted);"><strong>In practice:</strong> array-backed stacks win for almost all workloads. The cache advantage dominates. Use linked only when worst-case <code>O(1)</code> per-op matters (real-time systems).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 05 — The Call Stack
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">05</span>
+    <h2>Stack Application &mdash; The Call Stack</h2>
+  </div>
+  <p>Every running thread maintains a <strong>call stack</strong> &mdash; a LIFO structure that tracks function invocations.</p>
+  <div class="cols cols-2">
+    <div>
+      <h3>What lives in a stack frame</h3>
+      <div style="display:flex; flex-direction:column; gap:.3em; margin-top:0.3em">
+        <div style="display:flex; align-items:flex-start; gap:.5em; background:var(--bg3); border-radius:6px; padding:.35em .6em; font-size:.52em; border:1px solid var(--border);">
+          <span style="color:var(--amber); font-weight:600; min-width:1.2em;">1.</span>
+          <span style="color:var(--text); line-height:1.5"><strong style="color:var(--amber)">Return address</strong> &mdash; where to resume after the function returns</span>
+        </div>
+        <div style="display:flex; align-items:flex-start; gap:.5em; background:var(--bg3); border-radius:6px; padding:.35em .6em; font-size:.52em; border:1px solid var(--border);">
+          <span style="color:var(--green); font-weight:600; min-width:1.2em;">2.</span>
+          <span style="color:var(--text); line-height:1.5"><strong style="color:var(--amber)">Local variables</strong> &mdash; primitive values, object references</span>
+        </div>
+        <div style="display:flex; align-items:flex-start; gap:.5em; background:var(--bg3); border-radius:6px; padding:.35em .6em; font-size:.52em; border:1px solid var(--border);">
+          <span style="color:var(--purple); font-weight:600; min-width:1.2em;">3.</span>
+          <span style="color:var(--text); line-height:1.5"><strong style="color:var(--amber)">Function arguments</strong> &mdash; passed by caller</span>
+        </div>
+        <div style="display:flex; align-items:flex-start; gap:.5em; background:var(--bg3); border-radius:6px; padding:.35em .6em; font-size:.52em; border:1px solid var(--border);">
+          <span style="color:var(--blue); font-weight:600; min-width:1.2em;">4.</span>
+          <span style="color:var(--text); line-height:1.5"><strong style="color:var(--amber)">Saved registers</strong> &mdash; CPU state to restore on return</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3>Stack overflow</h3>
+      <p>Unbounded recursion pushes frames without popping. When the call stack exceeds its allocated memory (typically 1&ndash;8 MB), the OS raises a <strong>stack overflow</strong> error.</p>
+<pre><code class="language-python">def factorial(n):
+    if n &lt;= 1:         # base case
+        return 1
+    return n * factorial(n - 1)</code></pre>
+      <p style="font-size:.48em; color:var(--muted); margin-top:.3em;"><strong>Tail-call optimisation:</strong> some languages reuse the current frame for a recursive call in tail position, converting recursion to iteration. Supported in Scheme, Kotlin (<code>tailrec</code>). Not in Python or Java.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 06 — Parentheses Matching
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">06</span>
+    <h2>Stack Application &mdash; Parentheses Matching</h2>
+  </div>
+  <p>Verify that every opening bracket has a correctly nested closing partner.</p>
+  <div class="cols cols-2">
+    <div>
+      <h3>Algorithm</h3>
+<pre><code>For each character c in the input:
+  if c is '(' or '[' or '{':
+      push(c)
+  if c is ')' or ']' or '}':
+      if stack is empty:
+          return INVALID
+      if top does not match c:
+          return INVALID
+      pop()
+After all characters:
+  return VALID if stack is empty</code></pre>
+    </div>
+    <div>
+      <h3>Trace: <code>{[()]}</code></h3>
+      <table>
+        <thead><tr><th>Step</th><th>Char</th><th>Stack</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><code>{</code></td><td><code>{</code></td><td>push</td></tr>
+          <tr><td>2</td><td><code>[</code></td><td><code>{[</code></td><td>push</td></tr>
+          <tr><td>3</td><td><code>(</code></td><td><code>{[(</code></td><td>push</td></tr>
+          <tr><td>4</td><td><code>)</code></td><td><code>{[</code></td><td>pop &mdash; matches <code>(</code></td></tr>
+          <tr><td>5</td><td><code>]</code></td><td><code>{</code></td><td>pop &mdash; matches <code>[</code></td></tr>
+          <tr><td>6</td><td><code>}</code></td><td><em>empty</em></td><td>pop &mdash; matches <code>{</code></td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:.3em; font-size:.48em; color:var(--green);">VALID &mdash; stack is empty after processing all characters.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 07 — Expression Evaluation
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">07</span>
+    <h2>Stack Application &mdash; Expression Evaluation</h2>
+  </div>
+  <h3>Postfix (Reverse Polish Notation) evaluation</h3>
+  <p>Postfix eliminates parentheses and precedence rules. Evaluate left to right using a stack.</p>
+  <div class="cols cols-6040">
+    <div>
+      <table>
+        <thead><tr><th>Step</th><th>Token</th><th>Stack</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><code>3</code></td><td><code>[3]</code></td><td>push operand</td></tr>
+          <tr><td>2</td><td><code>4</code></td><td><code>[3, 4]</code></td><td>push operand</td></tr>
+          <tr><td>3</td><td><code>+</code></td><td><code>[7]</code></td><td>pop 4,3 &rarr; push 7</td></tr>
+          <tr><td>4</td><td><code>2</code></td><td><code>[7, 2]</code></td><td>push operand</td></tr>
+          <tr><td>5</td><td><code>*</code></td><td><code>[14]</code></td><td>pop 2,7 &rarr; push 14</td></tr>
+          <tr><td>6</td><td><code>7</code></td><td><code>[14, 7]</code></td><td>push operand</td></tr>
+          <tr><td>7</td><td><code>-</code></td><td><code>[7]</code></td><td>pop 7,14 &rarr; push 7</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:.3em;"><span class="a">Expression:</span> <code>3 4 + 2 * 7 -</code> &nbsp; <span class="g">Result: 7</span></p>
+    </div>
+    <div>
+      <h3>Algorithm</h3>
+<pre><code>For each token:
+  if token is a number:
+      push(token)
+  if token is an operator:
+      b = pop()
+      a = pop()
+      push(a op b)
+Return pop()</code></pre>
+      <p style="font-size:.48em; color:var(--muted); margin-top:.3em;">Used by HP calculators, Forth, PostScript, and the Java bytecode operand stack.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 08 — Shunting-Yard Algorithm
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">08</span>
+    <h2>Infix to Postfix &mdash; Shunting-Yard Algorithm</h2>
+  </div>
+  <p>Dijkstra's algorithm converts infix expressions to postfix using an operator stack.</p>
+  <div class="cols cols-2">
+    <div>
+      <h3>Rules</h3>
+<pre><code>For each token:
+  NUMBER   &rarr; output directly
+  (        &rarr; push onto operator stack
+  )        &rarr; pop &amp; output until '('
+  OPERATOR &rarr; while top has &ge; precedence:
+                 pop &amp; output
+               push current operator
+After all tokens:
+  pop &amp; output remaining operators</code></pre>
+    </div>
+    <div>
+      <h3>Trace: <code>3 + 4 * 2 - ( 1 + 5 )</code></h3>
+      <table>
+        <thead><tr><th>Token</th><th>Output</th><th>Op stack</th></tr></thead>
+        <tbody>
+          <tr><td><code>3</code></td><td><code>3</code></td><td></td></tr>
+          <tr><td><code>+</code></td><td><code>3</code></td><td><code>+</code></td></tr>
+          <tr><td><code>4</code></td><td><code>3 4</code></td><td><code>+</code></td></tr>
+          <tr><td><code>*</code></td><td><code>3 4</code></td><td><code>+ *</code></td></tr>
+          <tr><td><code>2</code></td><td><code>3 4 2</code></td><td><code>+ *</code></td></tr>
+          <tr><td><code>-</code></td><td><code>3 4 2 * +</code></td><td><code>-</code></td></tr>
+          <tr><td><code>(</code></td><td><code>3 4 2 * +</code></td><td><code>- (</code></td></tr>
+          <tr><td><code>1</code></td><td><code>3 4 2 * + 1</code></td><td><code>- (</code></td></tr>
+          <tr><td><code>+</code></td><td><code>3 4 2 * + 1</code></td><td><code>- ( +</code></td></tr>
+          <tr><td><code>5</code></td><td><code>3 4 2 * + 1 5</code></td><td><code>- ( +</code></td></tr>
+          <tr><td><code>)</code></td><td><code>3 4 2 * + 1 5 +</code></td><td><code>-</code></td></tr>
+          <tr><td>END</td><td><code>3 4 2 * + 1 5 + -</code></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 09 — The Queue — FIFO
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">09</span>
+    <h2>The Queue &mdash; FIFO</h2>
+  </div>
+  <p>First In, First Out. Elements are added at the rear and removed from the front.</p>
+  <div class="cols cols-6040">
+    <div>
+      <h3>Core operations</h3>
+      <table>
+        <thead><tr><th>Operation</th><th>Description</th><th>Time</th></tr></thead>
+        <tbody>
+          <tr><td><code>enqueue(x)</code></td><td>Add element to the rear</td><td><code>O(1)</code></td></tr>
+          <tr><td><code>dequeue()</code></td><td>Remove &amp; return front</td><td><code>O(1)</code></td></tr>
+          <tr><td><code>front()</code></td><td>Return front without removing</td><td><code>O(1)</code></td></tr>
+          <tr><td><code>isEmpty()</code></td><td>True if no elements</td><td><code>O(1)</code></td></tr>
+          <tr><td><code>size()</code></td><td>Number of elements</td><td><code>O(1)</code></td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:.4em; font-size:.48em; color:var(--muted);">The queue is the natural structure for fairness &mdash; first come, first served. Every message broker, task runner, and print spooler is built on this principle.</p>
+    </div>
+    <div>
+      <h3>Mental model</h3>
+<pre><code>enqueue(A)  enqueue(B)  enqueue(C)
+
+front                    front
+  &darr;                        &darr;
+┌───┐     ┌───┬───┐     ┌───┬───┬───┐
+│ A │     │ A │ B │     │ A │ B │ C │
+└───┘     └───┴───┘     └───┴───┴───┘
+                                 rear
+
+dequeue() &rarr; returns A
+
+  front
+    &darr;
+  ┌───┬───┐
+  │ B │ C │
+  └───┴───┘
+       rear</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 10 — Circular Buffer
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">10</span>
+    <h2>Array-Backed Circular Buffer</h2>
+  </div>
+  <p>A fixed-size array with <code>head</code> and <code>tail</code> pointers that wrap around, avoiding the <code>O(n)</code> cost of shifting elements.</p>
+  <div class="cols cols-2">
+    <div>
+      <h3>How it works</h3>
+<pre><code>Capacity: 5     head=0, tail=0 (empty)
+
+enqueue(A): [A _ _ _ _]  h=0, t=1
+enqueue(B): [A B _ _ _]  h=0, t=2
+enqueue(C): [A B C _ _]  h=0, t=3
+dequeue():  [_ B C _ _]  h=1, t=3  &rarr; A
+enqueue(D): [_ B C D _]  h=1, t=4
+enqueue(E): [_ B C D E]  h=1, t=0  &larr; wraps
+enqueue(F): [F B C D E]  h=1, t=1  &larr; wraps</code></pre>
+    </div>
+    <div>
+      <h3>Key formulas</h3>
+      <div class="card purple" style="margin-top:.3em;">
+        <p><code>tail = (tail + 1) % capacity</code></p>
+        <p><code>head = (head + 1) % capacity</code></p>
+        <p><code>size = (tail - head + cap) % cap</code></p>
+        <p><code>full = (size == capacity - 1)</code></p>
+      </div>
+      <p style="margin-top:.5em; font-size:.48em; color:var(--muted);"><strong>Why circular?</strong> A naive array queue wastes all space before the head pointer. Shifting elements on dequeue is <code>O(n)</code>. The circular buffer solves both with modular arithmetic.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 11 — Double-Ended Queue (Deque)
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">11</span>
+    <h2>Double-Ended Queue (Deque)</h2>
+  </div>
+  <p>A deque (pronounced &ldquo;deck&rdquo;) supports insertion and removal at <strong>both</strong> ends in <code>O(1)</code>.</p>
+  <div class="cols cols-2">
+    <div>
+      <h3>Operations</h3>
+      <table>
+        <thead><tr><th>Operation</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>pushFront(x)</code></td><td>Insert at the front</td></tr>
+          <tr><td><code>pushBack(x)</code></td><td>Insert at the rear</td></tr>
+          <tr><td><code>popFront()</code></td><td>Remove from the front</td></tr>
+          <tr><td><code>popBack()</code></td><td>Remove from the rear</td></tr>
+          <tr><td><code>peekFront()</code></td><td>View front element</td></tr>
+          <tr><td><code>peekBack()</code></td><td>View rear element</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h3>Implementations</h3>
+      <div class="cols" style="grid-template-columns:1fr; gap:.3em; margin-top:.3em;">
+        <div class="card amber">
+          <h3>Circular array buffer</h3>
+          <p>Same as queue, but head can move backwards too</p>
+        </div>
+        <div class="card green">
+          <h3>Doubly linked list</h3>
+          <p>Natural fit &mdash; insert/remove at either end is <code>O(1)</code></p>
+        </div>
+        <div class="card purple">
+          <h3>Block-based (<code>std::deque</code>)</h3>
+          <p>Map of fixed-size blocks for pointer stability and cache friendliness</p>
+        </div>
+      </div>
+      <p style="margin-top:.4em; font-size:.48em; color:var(--muted);">A deque restricted to one end is a stack. Restricted to pushBack + popFront, it is a queue. Python's <code>collections.deque</code> is recommended for both.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 12 — Priority Queue
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">12</span>
+    <h2>Priority Queue</h2>
+  </div>
+  <p>A collection where each element has a <strong>priority</strong> and the highest-priority element is always dequeued first.</p>
+  <div class="cols cols-2">
+    <div>
+      <h3>Operations</h3>
+      <table>
+        <thead><tr><th>Operation</th><th>Description</th><th>Heap time</th></tr></thead>
+        <tbody>
+          <tr><td><code>insert(x, p)</code></td><td>Add element with priority</td><td><code>O(log n)</code></td></tr>
+          <tr><td><code>extractMin()</code></td><td>Remove highest-priority element</td><td><code>O(log n)</code></td></tr>
+          <tr><td><code>peek()</code></td><td>View highest-priority element</td><td><code>O(1)</code></td></tr>
+          <tr><td><code>changePriority()</code></td><td>Update an element's priority</td><td><code>O(log n)</code></td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:.3em; font-size:.48em; color:var(--muted);">A sorted array gives <code>O(1)</code> extract but <code>O(n)</code> insert. A heap gives <code>O(log n)</code> for both &mdash; the right trade-off for dynamic workloads.</p>
+    </div>
+    <div>
+      <h3>Use cases</h3>
+      <div style="display:flex; flex-direction:column; gap:.3em; margin-top:0.3em">
+        <div style="display:flex; align-items:flex-start; gap:.5em; background:var(--bg3); border-radius:6px; padding:.35em .6em; font-size:.52em; border:1px solid var(--border);">
+          <span style="color:var(--amber); font-weight:600; min-width:1.2em;">&bull;</span>
+          <span style="color:var(--text); line-height:1.5"><strong style="color:var(--amber)">Dijkstra's shortest path</strong> &mdash; extract nearest unvisited vertex</span>
+        </div>
+        <div style="display:flex; align-items:flex-start; gap:.5em; background:var(--bg3); border-radius:6px; padding:.35em .6em; font-size:.52em; border:1px solid var(--border);">
+          <span style="color:var(--green); font-weight:600; min-width:1.2em;">&bull;</span>
+          <span style="color:var(--text); line-height:1.5"><strong style="color:var(--amber)">A* search</strong> &mdash; extract node with lowest f(n) = g(n) + h(n)</span>
+        </div>
+        <div style="display:flex; align-items:flex-start; gap:.5em; background:var(--bg3); border-radius:6px; padding:.35em .6em; font-size:.52em; border:1px solid var(--border);">
+          <span style="color:var(--purple); font-weight:600; min-width:1.2em;">&bull;</span>
+          <span style="color:var(--text); line-height:1.5"><strong style="color:var(--amber)">Huffman coding</strong> &mdash; extract two lowest-frequency nodes</span>
+        </div>
+        <div style="display:flex; align-items:flex-start; gap:.5em; background:var(--bg3); border-radius:6px; padding:.35em .6em; font-size:.52em; border:1px solid var(--border);">
+          <span style="color:var(--blue); font-weight:600; min-width:1.2em;">&bull;</span>
+          <span style="color:var(--text); line-height:1.5"><strong style="color:var(--amber)">OS scheduling</strong> &mdash; extract highest-priority runnable thread</span>
+        </div>
+        <div style="display:flex; align-items:flex-start; gap:.5em; background:var(--bg3); border-radius:6px; padding:.35em .6em; font-size:.52em; border:1px solid var(--border);">
+          <span style="color:var(--red); font-weight:600; min-width:1.2em;">&bull;</span>
+          <span style="color:var(--text); line-height:1.5"><strong style="color:var(--amber)">Event simulation</strong> &mdash; extract event with earliest timestamp</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 13 — Binary Heap Implementation
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">13</span>
+    <h2>Binary Heap Implementation</h2>
+  </div>
+  <p>A binary heap is a <strong>complete binary tree</strong> stored in a flat array. No pointers needed.</p>
+  <div class="cols cols-2">
+    <div>
+      <h3>Array layout (min-heap)</h3>
+<pre><code>Index:   0   1   2   3   4   5   6
+Value: [10, 15, 20, 25, 30, 35, 40]
+
+          10          Parent:  (i-1)/2
+         /  \         Left:    2i + 1
+       15    20       Right:   2i + 2
+      / \    / \
+    25  30  35  40</code></pre>
+      <h3>Heap operations</h3>
+      <ul>
+        <li><span class="a">Sift-up</span> (after insert): place at end, swap with parent while smaller. <code>O(log n)</code></li>
+        <li><span class="a">Sift-down</span> (after extract): move last to root, swap with smallest child. <code>O(log n)</code></li>
+        <li><span class="a">Heapify</span> (build from array): sift-down on each non-leaf, bottom up. <code>O(n)</code></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Why O(n) heapify?</h3>
+      <p>Most nodes are near the bottom and sift down only 1&ndash;2 levels. The sum forms a convergent geometric series:</p>
+      <div class="card green" style="margin-top:.3em;">
+        <p style="font-family:'JetBrains Mono',monospace; font-size:.55em; text-align:center; color:var(--green);">n/4 &times; 1 + n/8 &times; 2 + n/16 &times; 3 + &hellip; = O(n)</p>
+      </div>
+      <p style="margin-top:.4em; font-size:.48em; color:var(--muted);">This is why <code>heapq.heapify()</code> in Python and <code>Arrays.sort()</code> (Timsort) can build a heap in linear time &mdash; a non-obvious but critical result.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 14 — Monotonic Stack
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">14</span>
+    <h2>Monotonic Stack</h2>
+  </div>
+  <p>A stack that maintains elements in <strong>monotonically increasing or decreasing</strong> order. When a new element violates the monotonicity, elements are popped until order is restored.</p>
+  <div class="cols cols-6040">
+    <div>
+      <h3>Pattern: Next Greater Element</h3>
+<pre><code class="language-python">def next_greater(nums):
+    n = len(nums)
+    result = [-1] * n
+    stack = []    # indices; values decreasing
+    for i in range(n):
+        while stack and nums[i] > nums[stack[-1]]:
+            idx = stack.pop()
+            result[idx] = nums[i]
+        stack.append(i)
+    return result
+
+# nums   = [2, 1, 4, 3, 5]
+# result = [4, 4, 5, 5, -1]</code></pre>
+      <p style="font-size:.48em; color:var(--muted);">Each element is pushed once and popped at most once. Total: <code>O(n)</code> despite the nested loop.</p>
+    </div>
+    <div>
+      <h3>Classic problems</h3>
+      <div style="display:flex; flex-direction:column; gap:.3em; margin-top:0.3em">
+        <div class="card amber">
+          <h3>Next greater / smaller element</h3>
+          <p>Left or right variant &mdash; the foundational pattern</p>
+        </div>
+        <div class="card green">
+          <h3>Largest rectangle in histogram</h3>
+          <p><code>O(n)</code> using a monotonic increasing stack</p>
+        </div>
+        <div class="card purple">
+          <h3>Trapping rain water</h3>
+          <p>Monotonic stack or two-pointer approach</p>
+        </div>
+        <div class="card blue">
+          <h3>Daily temperatures</h3>
+          <p>Days until a warmer day &mdash; direct application</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 15 — Monotonic Queue
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">15</span>
+    <h2>Monotonic Queue</h2>
+  </div>
+  <p>A deque that maintains elements in monotonic order, enabling <strong>sliding-window min/max</strong> queries in <code>O(n)</code> total.</p>
+  <div class="cols cols-6040">
+    <div>
+      <h3>Sliding window maximum</h3>
+<pre><code class="language-python">from collections import deque
+
+def max_sliding_window(nums, k):
+    dq = deque()   # indices; values decreasing
+    result = []
+    for i, x in enumerate(nums):
+        while dq and dq[0] &lt; i - k + 1:
+            dq.popleft()        # outside window
+        while dq and nums[dq[-1]] &lt;= x:
+            dq.pop()            # maintain order
+        dq.append(i)
+        if i &gt;= k - 1:
+            result.append(nums[dq[0]])
+    return result
+
+# nums=[1,3,-1,-3,5,3,6,7], k=3
+# result=[3,3,5,5,6,7]</code></pre>
+    </div>
+    <div>
+      <h3>Complexity</h3>
+      <div class="card green" style="margin-top:.3em;">
+        <h3>Time: O(n)</h3>
+        <p>Each element enters and leaves the deque at most once</p>
+      </div>
+      <div class="card purple" style="margin-top:.3em;">
+        <h3>Space: O(k)</h3>
+        <p>Deque holds at most <code>k</code> elements</p>
+      </div>
+      <p style="margin-top:.5em; font-size:.48em; color:var(--muted);">A naive approach checks all <code>k</code> elements per window: <code>O(nk)</code>. The monotonic deque eliminates redundant comparisons by discarding elements that can never be the maximum.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 16 — Min-Stack / Max-Stack in O(1)
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">16</span>
+    <h2>Min-Stack / Max-Stack in O(1)</h2>
+  </div>
+  <p>Track the minimum (or maximum) at every point in time using an auxiliary stack.</p>
+  <div class="cols cols-6040">
+    <div>
+      <h3>Auxiliary stack approach</h3>
+<pre><code class="language-python">class MinStack:
+    def __init__(self):
+        self.stack = []
+        self.min_stack = []  # parallel minimums
+
+    def push(self, x):
+        self.stack.append(x)
+        m = min(x, self.min_stack[-1]) \
+            if self.min_stack else x
+        self.min_stack.append(m)
+
+    def pop(self):
+        self.min_stack.pop()
+        return self.stack.pop()
+
+    def getMin(self):
+        return self.min_stack[-1]  # O(1)</code></pre>
+    </div>
+    <div>
+      <h3>All operations: O(1)</h3>
+      <table>
+        <thead><tr><th>Operation</th><th>Main</th><th>Min stack</th></tr></thead>
+        <tbody>
+          <tr><td><code>push(x)</code></td><td>push x</td><td>push min(x, cur)</td></tr>
+          <tr><td><code>pop()</code></td><td>pop</td><td>pop</td></tr>
+          <tr><td><code>getMin()</code></td><td>&mdash;</td><td>peek</td></tr>
+        </tbody>
+      </table>
+      <h3 style="margin-top:.5em;">Alternative: encoded values</h3>
+      <p>Store <code>2*x - current_min</code> when <code>x &lt; current_min</code>. On pop, decode the previous min. Uses <code>O(1)</code> extra space but risks integer overflow.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 17 — Queue Using Two Stacks
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">17</span>
+    <h2>Queue Using Two Stacks</h2>
+  </div>
+  <p>Implement a FIFO queue using two LIFO stacks. Amortised <code>O(1)</code> per operation.</p>
+  <div class="cols cols-2">
+    <div>
+      <h3>Strategy</h3>
+      <ul>
+        <li><span class="a">Stack IN</span> &mdash; receives all enqueued elements</li>
+        <li><span class="g">Stack OUT</span> &mdash; serves all dequeue requests</li>
+        <li>When OUT is empty, pour all of IN into OUT (reversing order)</li>
+      </ul>
+      <h3 style="margin-top:.4em;">Trace</h3>
+<pre><code>enqueue(1): IN=[1]     OUT=[]
+enqueue(2): IN=[1,2]   OUT=[]
+dequeue():  IN=[]      OUT=[2,1] &larr; pour
+            IN=[]      OUT=[2]   &rarr; 1
+enqueue(3): IN=[3]     OUT=[2]
+dequeue():  IN=[3]     OUT=[]    &rarr; 2
+dequeue():  IN=[]      OUT=[3]   &larr; pour
+            IN=[]      OUT=[]    &rarr; 3</code></pre>
+    </div>
+    <div>
+      <h3>Amortised analysis</h3>
+      <div class="card amber" style="margin-top:.3em;">
+        <h3>Each element moves IN &rarr; OUT exactly once</h3>
+        <p>Over <code>n</code> operations, total moves = <code>n</code>. Each operation is <strong>amortised O(1)</strong>.</p>
+      </div>
+      <p style="margin-top:.5em; font-size:.48em; color:var(--muted);">This is a popular interview question, but it also has real uses: functional languages without mutable arrays implement queues this way (e.g. Okasaki's persistent queue).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 18 — Stack Using Two Queues
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">18</span>
+    <h2>Stack Using Two Queues</h2>
+  </div>
+  <p>Implement a LIFO stack using two FIFO queues. Two strategies exist.</p>
+  <div class="cols cols-2">
+    <div class="card amber">
+      <h3>Strategy 1: Costly push &mdash; O(n) push, O(1) pop</h3>
+<pre><code>push(x):
+    enqueue x into Q2
+    while Q1 is not empty:
+        dequeue from Q1 &rarr; enqueue into Q2
+    swap Q1 and Q2
+
+pop():
+    dequeue from Q1</code></pre>
+      <p style="margin-top:.3em;">Best when many more pops than pushes.</p>
+    </div>
+    <div class="card green">
+      <h3>Strategy 2: Costly pop &mdash; O(1) push, O(n) pop</h3>
+<pre><code>push(x):
+    enqueue x into Q1
+
+pop():
+    while Q1 has more than 1 element:
+        dequeue from Q1 &rarr; enqueue into Q2
+    result = dequeue from Q1
+    swap Q1 and Q2
+    return result</code></pre>
+      <p style="margin-top:.3em;">Best when many more pushes than pops.</p>
+    </div>
+  </div>
+  <p style="font-size:.48em; color:var(--muted); margin-top:.3em;">Neither approach achieves amortised <code>O(1)</code> for both operations. This is why the two-stack queue is preferred &mdash; it achieves amortised <code>O(1)</code> for all operations.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 19 — Concurrent Queues
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">19</span>
+    <h2>Concurrent Queues</h2>
+  </div>
+  <p>In multi-threaded systems, queues must handle simultaneous producers and consumers safely.</p>
+  <div class="cols cols-2">
+    <div>
+      <h3>Lock-free queue (Michael &amp; Scott, 1996)</h3>
+      <p>Uses <strong>Compare-And-Swap (CAS)</strong> to atomically update head and tail pointers without locks.</p>
+<pre><code>CAS(addr, expected, new):
+    atomically:
+        if *addr == expected:
+            *addr = new
+            return true
+        return false</code></pre>
+      <ul>
+        <li><span class="a">Enqueue:</span> CAS tail's <code>next</code> from null to new node, then CAS tail forward</li>
+        <li><span class="g">Dequeue:</span> CAS head from current to <code>head.next</code></li>
+        <li>If CAS fails, another thread succeeded &mdash; retry</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Trade-offs</h3>
+      <table>
+        <thead><tr><th>Approach</th><th>Throughput</th><th>Complexity</th></tr></thead>
+        <tbody>
+          <tr><td>Mutex queue</td><td>Moderate</td><td>Low</td></tr>
+          <tr><td>Lock-free (CAS)</td><td>High</td><td>High</td></tr>
+          <tr><td>Wait-free</td><td>Highest</td><td>Very high</td></tr>
+        </tbody>
+      </table>
+      <h3 style="margin-top:.4em;">Standard library support</h3>
+      <div style="margin-top:.3em;">
+        <span class="pill amber">Java: ConcurrentLinkedQueue</span>
+        <span class="pill green">Go: channels (CSP)</span>
+        <span class="pill purple">Rust: crossbeam::queue</span>
+        <span class="pill blue">C++: boost::lockfree</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 20 — Applications
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">20</span>
+    <h2>Applications &mdash; BFS, Scheduling, Undo</h2>
+  </div>
+  <div class="cols cols-3" style="margin-top:.3em;">
+    <div class="card amber">
+      <h3>Breadth-First Search</h3>
+      <p>A queue drives BFS: enqueue start, repeatedly dequeue a node, process it, enqueue unvisited neighbours. Guarantees shortest path in unweighted graphs.</p>
+<pre><code>queue = [start]
+while queue:
+    node = dequeue()
+    for n in neighbours(node):
+        if not visited(n):
+            enqueue(n)</code></pre>
+    </div>
+    <div class="card green">
+      <h3>Task Scheduling</h3>
+      <ul>
+        <li><span class="a">Round-robin CPU</span> &mdash; processes cycle through a ready queue</li>
+        <li><span class="a">Thread pool</span> &mdash; tasks enqueued by producers, dequeued by workers</li>
+        <li><span class="a">Message queues</span> &mdash; Kafka, RabbitMQ, SQS: async producer/consumer</li>
+      </ul>
+    </div>
+    <div class="card purple">
+      <h3>Undo / Redo</h3>
+      <p>Stack-based: every action &rarr; undo stack. On undo: pop undo, push to redo. On redo: reverse.</p>
+<pre><code>Action &rarr; push undo
+Undo   &rarr; pop undo, push redo
+Redo   &rarr; pop redo, push undo
+New action &rarr; clear redo</code></pre>
+    </div>
+  </div>
+  <h3 style="margin-top:.4em;">Structure &rarr; Application mapping</h3>
+  <table>
+    <thead><tr><th>Structure</th><th>Applications</th></tr></thead>
+    <tbody>
+      <tr><td><span class="a">Stack</span></td><td>Call stack, undo, expression eval, DFS, backtracking</td></tr>
+      <tr><td><span class="g">Queue</span></td><td>BFS, scheduling, buffering, message passing</td></tr>
+      <tr><td><span class="p">Priority queue</span></td><td>Dijkstra, A*, Huffman, OS scheduling</td></tr>
+      <tr><td><span class="b">Deque</span></td><td>Sliding window, work stealing, palindrome checking</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+  SLIDE 21 — Summary & Further Reading
+══════════════════════════════════════════════════════════════════ -->
+<section data-background-color="#0a0a0f">
+  <div class="slide-hdr">
+    <span class="tag">21</span>
+    <h2>Summary &amp; Further Reading</h2>
+  </div>
+  <div class="cols cols-2">
+    <div>
+      <h3>Key takeaways</h3>
+      <ul>
+        <li>Stacks and queues are <strong>ADTs</strong> &mdash; define by operations and invariants, not implementation</li>
+        <li>Array-backed implementations dominate due to <strong>cache locality</strong></li>
+        <li>The <strong>circular buffer</strong> solves the dequeue-shift problem with modular arithmetic</li>
+        <li>Monotonic stacks/queues reduce common problems from <code>O(n&sup2;)</code> to <code>O(n)</code></li>
+        <li>A <strong>min-stack</strong> augments the stack ADT with <code>O(1)</code> minimum queries</li>
+        <li>Two stacks make a queue with <strong>amortised O(1)</strong> &mdash; a foundational result</li>
+        <li><strong>Binary heaps</strong> power shortest-path and greedy algorithms</li>
+        <li>Lock-free concurrent queues use <strong>CAS</strong> to avoid mutex bottlenecks</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Recommended reading</h3>
+      <table>
+        <thead><tr><th>Source</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><span class="a">Cormen et al.</span></td><td><em>Introduction to Algorithms</em> (CLRS) &mdash; heaps, stacks, queues</td></tr>
+          <tr><td><span class="a">Okasaki</span></td><td><em>Purely Functional Data Structures</em> &mdash; persistent queues</td></tr>
+          <tr><td><span class="a">Sedgewick</span></td><td><em>Algorithms</em>, 4th ed. &mdash; practical Java implementations</td></tr>
+          <tr><td><span class="a">Michael &amp; Scott</span></td><td>Non-blocking concurrent queue algorithms (1996)</td></tr>
+          <tr><td><span class="a">Skiena</span></td><td><em>Algorithm Design Manual</em> &mdash; when to use which structure</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+</div><!-- /slides -->
+</div><!-- /reveal -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
+<script>
+Reveal.initialize({
+  hash: true,
+  slideNumber: 'c/t',
+  transition: 'fade',
+  transitionSpeed: 'fast',
+  controls: true,
+  progress: true,
+  center: false,
+  width: 1100,
+  height: 900,
+  margin: 0.01,
+  plugins: [RevealHighlight],
+  highlight: { theme: 'monokai' }
+});
+</script>
+<script>
+(function(){
+  var h = Reveal.getConfig().height || 900;
+  var m = Reveal.getConfig().margin || 0.02;
+  var maxH = Math.floor(h * (1 - 2 * m)) + 'px';
+  function fixSlides(){
+    document.querySelectorAll('.reveal .slides>section,.reveal .slides>section>section').forEach(function(s){
+      s.style.display = 'block';
+      s.style.maxHeight = maxH;
+    });
+  }
+  Reveal.on('ready', fixSlides);
+  Reveal.on('slidechanged', fixSlides);
+})();
+</script>
+</body>
+</html>
