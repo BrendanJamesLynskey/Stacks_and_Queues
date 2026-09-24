@@ -6,7 +6,7 @@
   <title>Stacks and Queues</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/white.min.css">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,17 +14,17 @@
 
   <style>
   :root {
-    --amber:  #f5a623;
-    --green:  #4ecb8d;
-    --purple: #a78bfa;
-    --blue:   #60a5fa;
-    --red:    #f87171;
-    --bg:     #0a0a0f;
-    --bg2:    #10101a;
-    --bg3:    #181824;
-    --border: #2a2a3a;
-    --text:   #e8e8f0;
-    --muted:  #8888a8;
+    --amber:  #bf7d10;
+    --green:  #1c815a;
+    --purple: #6435bc;
+    --blue:   #2b3dc5;
+    --red:    #db3a30;
+    --bg:     #fafaf8;
+    --bg2:    #f1f1ee;
+    --bg3:    #eaeae6;
+    --border: #d1d1cb;
+    --text:   #161616;
+    --muted:  #6a6a63;
   }
 
   .reveal-viewport { background: var(--bg); }
@@ -40,7 +40,7 @@
   .reveal code { font-family: 'JetBrains Mono', monospace; font-size: .72em; }
   .reveal pre  { box-shadow: none; background: var(--bg3); border: 1px solid var(--border);
                  border-radius: 6px; padding: .3em .5em; margin: .25em 0; }
-  .reveal pre code { font-size: .52em; line-height: 1.35; background: transparent; color: #cdd6f4; }
+  .reveal pre code { font-size: .52em; line-height: 1.35; background: transparent; color: #242422; }
 
   /* ── slide chrome ── */
   .slide-hdr {
@@ -75,16 +75,16 @@
   .card.blue  { border-left: 3px solid var(--blue); }
   .card.red   { border-left: 3px solid var(--red); }
   .card h3 { font-size: .64em; margin: 0 0 .12em; }
-  .card p  { font-size: .52em; margin: 0; color: #b8b8d0; }
+  .card p  { font-size: .52em; margin: 0; color: #3d3d39; }
   .card ul { margin: 0; padding-left: 1em; }
-  .card li { font-size: .52em; color: #b8b8d0; margin-bottom: .02em; }
+  .card li { font-size: .52em; color: #3d3d39; margin-bottom: .02em; }
 
   /* ── table ── */
   .reveal table { width: 100%; border-collapse: collapse; font-size: .5em; }
   .reveal table th { background: var(--bg3); color: var(--amber); font-weight: 600;
                      padding: .2em .4em; border: 1px solid var(--border); text-align: left; }
-  .reveal table td { padding: .18em .4em; border: 1px solid var(--border); color: #ccc; }
-  .reveal table tr:nth-child(even) td { background: #0e0e18; }
+  .reveal table td { padding: .18em .4em; border: 1px solid var(--border); color: #2d2d2b; }
+  .reveal table tr:nth-child(even) td { background: #f3f3f1; }
 
   /* ── accent spans ── */
   .a  { color: var(--amber); font-weight: 600; }
@@ -127,8 +127,8 @@
     padding: .2em .55em; border-radius: 5px; font-size: .9em;
     background: var(--bg3); border: 1px solid var(--border); color: var(--text);
   }
-  .ss-node.active { background: #1a2a1a; border-color: var(--green); color: var(--green); }
-  .ss-node.done   { background: #1a1a2a; border-color: var(--purple); color: var(--purple); }
+  .ss-node.active { background: #d3e1d5; border-color: var(--green); color: var(--green); }
+  .ss-node.done   { background: #e6e6e2; border-color: var(--purple); color: var(--purple); }
   .ss-arrow { color: var(--amber); }
   .ss-label { font-size: .8em; color: var(--muted); margin-left: .3em; }
 
@@ -136,6 +136,7 @@
   .reveal ul, .reveal ol { margin: .15em 0 .15em 1em; }
 .reveal .slides > section { display: flex !important; flex-direction: column !important; overflow-y: auto !important; align-items: stretch !important; justify-content: flex-start !important; }
 </style>
+<style>.reveal .slide-number{background-color:transparent}</style>
 </head>
 <body>
 <div class="reveal">
@@ -144,7 +145,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 01 — Title
 ══════════════════════════════════════════════════════════════════ -->
-<section class="title-slide" data-background-color="#0a0a0f">
+<section class="title-slide" data-background-color="#fafaf8">
   <div style="font-family:'JetBrains Mono',monospace; font-size:.5em; color:var(--muted); margin-bottom:.4em; letter-spacing:.1em;">COMPUTER SCIENCE FUNDAMENTALS SERIES</div>
   <h1>Stacks and<br>Queues</h1>
   <div class="subtitle">
@@ -160,7 +161,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 02 — Abstract Data Types vs Concrete Implementations
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">02</span>
     <h2>Abstract Data Types vs Concrete Implementations</h2>
@@ -194,7 +195,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 03 — The Stack — LIFO
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">03</span>
     <h2>The Stack &mdash; LIFO</h2>
@@ -230,7 +231,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 04 — Array-Backed vs Linked Stack
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">04</span>
     <h2>Array-Backed vs Linked Stack</h2>
@@ -274,7 +275,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 05 — The Call Stack
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">05</span>
     <h2>Stack Application &mdash; The Call Stack</h2>
@@ -317,7 +318,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 06 — Parentheses Matching
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">06</span>
     <h2>Stack Application &mdash; Parentheses Matching</h2>
@@ -359,7 +360,7 @@ After all characters:
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 07 — Expression Evaluation
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">07</span>
     <h2>Stack Application &mdash; Expression Evaluation</h2>
@@ -400,7 +401,7 @@ Return pop()</code></pre>
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 08 — Shunting-Yard Algorithm
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">08</span>
     <h2>Infix to Postfix &mdash; Shunting-Yard Algorithm</h2>
@@ -445,7 +446,7 @@ After all tokens:
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 09 — The Queue — FIFO
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">09</span>
     <h2>The Queue &mdash; FIFO</h2>
@@ -492,7 +493,7 @@ dequeue() &rarr; returns A
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 10 — Circular Buffer
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">10</span>
     <h2>Array-Backed Circular Buffer</h2>
@@ -527,7 +528,7 @@ enqueue(F): [F B C D E]  h=1, t=1  &larr; wraps</code></pre>
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 11 — Double-Ended Queue (Deque)
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">11</span>
     <h2>Double-Ended Queue (Deque)</h2>
@@ -572,7 +573,7 @@ enqueue(F): [F B C D E]  h=1, t=1  &larr; wraps</code></pre>
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 12 — Priority Queue
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">12</span>
     <h2>Priority Queue</h2>
@@ -623,7 +624,7 @@ enqueue(F): [F B C D E]  h=1, t=1  &larr; wraps</code></pre>
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 13 — Binary Heap Implementation
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">13</span>
     <h2>Binary Heap Implementation</h2>
@@ -661,7 +662,7 @@ Value: [10, 15, 20, 25, 30, 35, 40]
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 14 — Monotonic Stack
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">14</span>
     <h2>Monotonic Stack</h2>
@@ -712,7 +713,7 @@ Value: [10, 15, 20, 25, 30, 35, 40]
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 15 — Monotonic Queue
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">15</span>
     <h2>Monotonic Queue</h2>
@@ -757,7 +758,7 @@ def max_sliding_window(nums, k):
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 16 — Min-Stack / Max-Stack in O(1)
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">16</span>
     <h2>Min-Stack / Max-Stack in O(1)</h2>
@@ -803,7 +804,7 @@ def max_sliding_window(nums, k):
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 17 — Queue Using Two Stacks
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">17</span>
     <h2>Queue Using Two Stacks</h2>
@@ -841,7 +842,7 @@ dequeue():  IN=[]      OUT=[3]   &larr; pour
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 18 — Stack Using Two Queues
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">18</span>
     <h2>Stack Using Two Queues</h2>
@@ -880,7 +881,7 @@ pop():
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 19 — Concurrent Queues
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">19</span>
     <h2>Concurrent Queues</h2>
@@ -926,7 +927,7 @@ pop():
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 20 — Applications
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">20</span>
     <h2>Applications &mdash; BFS, Scheduling, Undo</h2>
@@ -974,7 +975,7 @@ New action &rarr; clear redo</code></pre>
 <!-- ═══════════════════════════════════════════════════════════════
   SLIDE 21 — Summary & Further Reading
 ══════════════════════════════════════════════════════════════════ -->
-<section data-background-color="#0a0a0f">
+<section data-background-color="#fafaf8">
   <div class="slide-hdr">
     <span class="tag">21</span>
     <h2>Summary &amp; Further Reading</h2>
